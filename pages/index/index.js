@@ -1,26 +1,49 @@
-//index.js
-//获取应用实例
 var app = getApp()
+var util = require('../../utils/util')
+app.getUserInfo();
 Page({
-  data: {
-    motto: 'Hello World',
-    userInfo: {}
-  },
-  //事件处理函数
-  bindViewTap: function() {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },
-  onLoad: function () {
-    console.log('onLoad')
-    var that = this
-    //调用应用实例的方法获取全局数据
-    app.getUserInfo(function(userInfo){
-      //更新数据
-      that.setData({
-        userInfo:userInfo
-      })
-    })
-  }
+    data:{
+      list:null,
+      modalHidden:true,
+      hidden:true,
+      toast1Hidden:true
+    },
+    onReady:function(){
+        util.getUser(this);
+    },
+    modalTap: function(e) {
+        this.setData({
+            modalHidden: false
+        })
+    },
+    modalChange:function(e){
+        this.setData({
+            modalHidden: true
+        })
+    },
+    goPage:function(e){
+        var _self = this;
+        var newlist = _self.data.list
+        var index = e.currentTarget.dataset.index
+        newlist[index].count=0;
+        _self.setData({
+            list: newlist
+        })
+        // console.log(e.currentTarget.dataset.index)
+        // console.log(e.target.dataset.name)
+        wx.navigateTo({
+            url: '../message/message?name='+e.currentTarget.dataset.name+"&id="+e.currentTarget.dataset.id
+        })
+        // console.log(test);
+    },
+    toast1Change:function(){
+        this.setData({
+            toast1Hidden: true
+        })
+    },
+    onPullDownRefresh:function(){
+        
+        util.getUser(this);
+        
+    }
 })
